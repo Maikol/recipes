@@ -1,0 +1,36 @@
+<html>
+  <head>
+      <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>Recipes</title>
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div class="container">
+      <div class="jumbotron">
+        <div class="row-fluid">
+          <div class="span9" id="app"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- scripts and styles -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    {% style "/css/site.css" %}
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var context = "{{servlet-context}}";
+    </script>
+    {% if dev %}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.11.2/react.js"></script>
+      {% script "/js/out/goog/base.js" %}
+      {% script "/js/app.js" %}
+      <script type="text/javascript">goog.require("recipes.dev");</script>
+    {% else %}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.11.2/react.min.js"></script>
+      {% script "/js/app.js" %}
+    {% endif %}
+  </body>
+</html>
