@@ -30,7 +30,8 @@
     [leiningen "2.5.1"]
     [figwheel "0.2.2-SNAPSHOT"]
     [org.clojure/java.jdbc "0.3.6"]
-    [postgresql/postgresql "8.4-702.jdbc4"]]
+    [postgresql/postgresql "8.4-702.jdbc4"]
+    [lobos "1.0.0-beta3"]]
 
   :plugins [
     [lein-cljsbuild "1.0.4"]

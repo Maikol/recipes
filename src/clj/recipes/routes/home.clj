@@ -18,7 +18,6 @@
         "index.html" {:docs (util/md->html "/md/docs.md")}))
 
 (defn save-document [doc]
-      (schema/migrate)
       (pprint doc)
       (model/create (get doc :recipe-name))
       {:status "ok"})
