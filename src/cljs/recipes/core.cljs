@@ -23,6 +23,15 @@
   (get-in @state [:doc id]))
 
 ;; -------------------------
+;; Declarations
+
+(def recipe-name (atom ""))
+
+(def ingredients (atom (sorted-map)))
+
+(def counter (atom 0))
+
+;; -------------------------
 ;; Forms Helpers
 
 (defn row [label & body]
@@ -30,16 +39,20 @@
     [:div.col-xs-3 [:span label]]
     [:div.col-xs-6 body]])
 
-(defn text-input [id label]
-  [row label [:input.form-control {:field :text :id id :onChange #(set-value! id (-> % .-target .-value))}]])
+(defn recipe-name-input [label]
+  [row label [:input.form-control {:field :text :value @recipe-name :on-change #(reset! recipe-name (-> % .-target .-value))}]])
+
+(defn ingredient-name-input [id label]
+  [row label [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :val] (-> % .-target .-value))}]])
 
 ;; -------------------------
 ;; Ajax POST
 
 (defn save-doc []
- (POST (str js/context "/save")
-       {:params (:doc @state)
-        :handler (fn [_] (secretary/dispatch! "#/"))}))
+  (POST (str js/context "/save")
+    {:params {:recipe-name @recipe-name
+              :ingredients @ingredients}
+    :handler (fn [_] (secretary/dispatch! "#/"))}))
 
 ;; -------------------------
 ;; Home
@@ -59,17 +72,13 @@
 ;; -------------------------
 ;; New Recipe
 
-(def ingredients (atom (sorted-map)))
-
-(def counter (atom 0))
-
 (defn add-ingredient [text]
   (let [id (swap! counter inc)]
-    (swap! ingredients assoc id {:id id :title text})))
+    (swap! ingredients assoc id {:id id :title text :val "Hola"})))
 
 (defn ingredient-item []
   (fn [{:keys [id title]}]
-    [text-input (str "ingredient_" id) title]))
+    [ingredient-name-input id title]))
 
 (defn add-ingredient-button []
   [:div
@@ -86,7 +95,7 @@
 
 (defn new-recipe-form []
   [:div
-    [text-input :recipe-name "Recipe Name"]])
+    [recipe-name-input "Recipe Name"]])
 
 (defn submit-recipe-button []
   [:button {:type "submit"
