@@ -1,11 +1,10 @@
 (ns recipes.routes.home
-            (:require [recipes.layout :as layout]
-                      [recipes.util :as util]
-                      [compojure.core :refer :all]
-                      [noir.response :refer [edn]]
-                      [clojure.pprint :refer [pprint]]
-                      [recipes.models.recipe :as model]
-                      [recipes.models.migration :as schema]))
+  (:require [recipes.layout :as layout]
+            [recipes.util :as util]
+            [compojure.core :refer :all]
+            [noir.response :refer [edn]]
+            [clojure.pprint :refer [pprint]]
+            [recipes.db.core :as models]))
 
 (require '[clojure.java.jdbc :as j])
 
@@ -19,7 +18,7 @@
 
 (defn save-document [doc]
       (pprint doc)
-      (model/create (get doc :recipe-name))
+      (models/create-recipe (get doc :recipe-name))
       {:status "ok"})
 
 (defroutes home-routes

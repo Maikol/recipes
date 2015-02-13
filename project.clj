@@ -31,7 +31,8 @@
     [figwheel "0.2.2-SNAPSHOT"]
     [org.clojure/java.jdbc "0.3.6"]
     [postgresql/postgresql "8.4-702.jdbc4"]
-    [lobos "1.0.0-beta3"]]
+    [lobos "1.0.0-beta3"]
+    [korma "0.4.0"]]
 
   :plugins [
     [lein-cljsbuild "1.0.4"]

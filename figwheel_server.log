@@ -854,3 +854,31 @@ notifying browser that file changed:  /js/out/recipes/core.js
 [0mCompiling "resources/public/js/app.js" from ["src/cljs" "env/dev/cljs"]...
 [32mSuccessfully compiled "resources/public/js/app.js" in 0.288 seconds.[0m
 notifying browser that file changed:  /js/out/recipes/core.js
+Figwheel: focusing on build-ids (app)
+[0mCompiling "resources/public/js/app.js" from ["src/cljs" "env/dev/cljs"]...
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.156 seconds.[0m
+notifying browser that file changed:  /js/app.js
+notifying browser that file changed:  /js/out/goog/deps.js
+notifying browser that file changed:  /js/out/recipes/core.js
+notifying browser that file changed:  /js/out/recipes/dev.js
+Figwheel: focusing on build-ids (app)
+[0mCompiling "resources/public/js/app.js" from ["src/cljs" "env/dev/cljs"]...
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.166 seconds.[0m
+notifying browser that file changed:  /js/app.js
+notifying browser that file changed:  /js/out/goog/deps.js
+notifying browser that file changed:  /js/out/recipes/core.js
+notifying browser that file changed:  /js/out/recipes/dev.js
+Figwheel: focusing on build-ids (app)
+[0mCompiling "resources/public/js/app.js" from ["src/cljs" "env/dev/cljs"]...
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.146 seconds.[0m
+notifying browser that file changed:  /js/app.js
+notifying browser that file changed:  /js/out/goog/deps.js
+notifying browser that file changed:  /js/out/recipes/core.js
+notifying browser that file changed:  /js/out/recipes/dev.js
+Figwheel: focusing on build-ids (app)
+[0mCompiling "resources/public/js/app.js" from ["src/cljs" "env/dev/cljs"]...
+[32mSuccessfully compiled "resources/public/js/app.js" in 0.209 seconds.[0m
+notifying browser that file changed:  /js/app.js
+notifying browser that file changed:  /js/out/goog/deps.js
+notifying browser that file changed:  /js/out/recipes/core.js
+notifying browser that file changed:  /js/out/recipes/dev.js
