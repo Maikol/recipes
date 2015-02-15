@@ -4,7 +4,7 @@
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [ajax.core :refer [POST]])
+              [ajax.core :refer [POST GET]])
     (:import goog.History))
 
 ;; -------------------------
@@ -31,6 +31,8 @@
 
 (def counter (atom 0))
 
+(def recipes (atom []))
+
 ;; -------------------------
 ;; Forms Helpers
 
@@ -46,20 +48,38 @@
   [row label [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :val] (-> % .-target .-value))}]])
 
 ;; -------------------------
-;; Ajax POST
+;; Ajax Methods
 
 (defn save-doc []
-  (POST (str js/context "/save")
+  (POST (str js/context "/recipes/new")
     {:params {:recipe-name @recipe-name
               :ingredients @ingredients}
     :handler (fn [_] (secretary/dispatch! "#/"))}))
 
+(defn get-recipes []
+  (GET (str js/context "/recipes")
+    :handler (fn [response] (reset! recipes response))
+    :response-format :json
+    :keywords? true))
+
 ;; -------------------------
 ;; Home
 
+(defn recipe-item [recipe]
+  (let [recipe-name (get recipe :name)
+        ingredients-items (get recipe :ingredients)]
+    [:li recipe-name]))
+
 (defn home-page []
+  (get-recipes)
   [:div
     [:div.row [:h2 "Recipes Index"]]
+    [:div.row [:button { :class "btn-warning btn-sm" :onClick #(get-recipes)} "Load Recipes"]]
+    [:div
+      (for [recipe (filter identity @recipes)]
+        (do
+          [recipe-item recipe]))]
+    [:br]
     [:div.row [:button { :class "btn-primary btn-lg" :onClick #(secretary/dispatch! "#/new_recipe")} "New Recipe"]]])
 
 ;; -------------------------

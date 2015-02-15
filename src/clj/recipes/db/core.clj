@@ -1,6 +1,7 @@
 (ns recipes.db.core
   (:require [recipes.db.schema :as schema]
             [clojure.pprint :refer [pprint]])
+  (:use korma.core)
   (:use korma.db))
 
 (declare recipes ingredients)
@@ -25,3 +26,6 @@
     (transaction
       (let [recipe (insert recipes (values {:name recipe-name}))]
         (insert-ingredients (get recipe :id) ingredients-map)))))
+
+(defn get-all-recipes []
+  (select recipes (with ingredients)))

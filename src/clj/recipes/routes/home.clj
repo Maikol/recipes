@@ -23,5 +23,6 @@
 
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (POST "/save" {:keys [body-params]}
-    (edn (save-document body-params))))
+  (POST "/recipes/new" {:keys [body-params]}
+    (edn (save-document body-params)))
+  (GET "/recipes" [] (models/get-all-recipes)))
