@@ -27,6 +27,10 @@
 
 (def recipe-name (atom ""))
 
+(def recipe-instructions (atom ""))
+
+(def recipe-avatar-url (atom ""))
+
 (def ingredients (atom (sorted-map)))
 
 (def counter (atom 0))
@@ -45,14 +49,16 @@
   [row label [:input.form-control {:field :text :value @recipe-name :on-change #(reset! recipe-name (-> % .-target .-value))}]])
 
 (defn ingredient-name-input [id label]
-  [row label [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :val] (-> % .-target .-value))}]])
+  [row label [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :name] (-> % .-target .-value))}]])
 
 ;; -------------------------
 ;; Ajax Methods
 
 (defn save-doc []
   (POST (str js/context "/recipes/new")
-    {:params {:recipe-name @recipe-name
+    {:params {:name @recipe-name
+              :instructions @recipe-instructions
+              :avatar_url @recipe-avatar-url
               :ingredients @ingredients}
     :handler (fn [_] (secretary/dispatch! "#/"))}))
 
@@ -94,7 +100,7 @@
 
 (defn add-ingredient [text]
   (let [id (swap! counter inc)]
-    (swap! ingredients assoc id {:id id :val ""})))
+    (swap! ingredients assoc id {:id id :name "" :units "cups" :quantity 2})))
 
 (defn ingredient-item []
   (fn [{:keys [id]}]

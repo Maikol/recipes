@@ -17,14 +17,14 @@
 (defn insert-ingredients [recipe-id ingredients-map]
   (let [ingredients-seq (vals ingredients-map)]
     (doseq [ingredient ingredients-seq]
-      (let [ingredient-name (get ingredient :val)]
-        (insert ingredients (values {:name ingredient-name :recipe_id recipe-id}))))))
+      (let [ingredient-values (assoc (dissoc ingredient :id) :recipe_id recipe-id)]
+        (insert ingredients (values ingredient-values))))))
 
 (defn create-recipe [params]
-  (let [recipe-name (get params :recipe-name)
+  (let [recipe-params (dissoc params :ingredients)
         ingredients-map (get params :ingredients)]
     (transaction
-      (let [recipe (insert recipes (values {:name recipe-name}))]
+      (let [recipe (insert recipes (values recipe-params))]
         (insert-ingredients (get recipe :id) ingredients-map)))))
 
 (defn get-all-recipes []

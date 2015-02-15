@@ -22,7 +22,7 @@ lein repl
 id (auto inc)
 name
 instructions
-avatar
+avatar_url
 ingredients (has many)
 created (Date now)
 ```
