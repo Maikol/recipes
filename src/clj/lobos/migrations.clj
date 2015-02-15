@@ -18,7 +18,7 @@
 (defmigration add-ingredients-table
 	(up [] (create
 					(table :ingredients
-						(integer :id :primary-key )
+						(integer :id :primary-key :auto-inc )
 						(varchar :name 250)
 						(varchar :units 100)
 						(timestamp :created (default (now)))

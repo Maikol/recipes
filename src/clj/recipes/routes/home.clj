@@ -18,7 +18,7 @@
 
 (defn save-document [doc]
       (pprint doc)
-      (models/create-recipe (get doc :recipe-name))
+      (models/create-recipe doc)
       {:status "ok"})
 
 (defroutes home-routes

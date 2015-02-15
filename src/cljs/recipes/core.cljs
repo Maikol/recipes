@@ -74,11 +74,11 @@
 
 (defn add-ingredient [text]
   (let [id (swap! counter inc)]
-    (swap! ingredients assoc id {:id id :title text :val "Hola"})))
+    (swap! ingredients assoc id {:id id :val ""})))
 
 (defn ingredient-item []
-  (fn [{:keys [id title]}]
-    [ingredient-name-input id title]))
+  (fn [{:keys [id]}]
+    [ingredient-name-input id "Item"]))
 
 (defn add-ingredient-button []
   [:div
