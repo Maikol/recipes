@@ -4,7 +4,8 @@
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [ajax.core :refer [POST GET]])
+              [ajax.core :refer [POST GET]]
+              [reagent-forms.core :refer [bind-fields]])
     (:import goog.History))
 
 ;; -------------------------
@@ -25,11 +26,7 @@
 ;; -------------------------
 ;; Declarations
 
-(def recipe-name (atom ""))
-
-(def recipe-instructions (atom ""))
-
-(def recipe-avatar-url (atom ""))
+(def new-recipe (atom {:name "" :avatar_url "" :instructions ""}))
 
 (def ingredients (atom (sorted-map)))
 
@@ -40,25 +37,52 @@
 ;; -------------------------
 ;; Forms Helpers
 
+;; Recipes
+
 (defn row [label & body]
   [:div.row
-    [:div.col-xs-3 [:span label]]
+    [:div.col-xs-2 [:span label]]
     [:div.col-xs-6 body]])
 
 (defn recipe-name-input [label]
-  [row label [:input.form-control {:field :text :value @recipe-name :on-change #(reset! recipe-name (-> % .-target .-value))}]])
+  [row label [:input.form-control {:field :text :on-change #(swap! new-recipe assoc-in [:name] (-> % .-target .-value))}]])
 
-(defn ingredient-name-input [id label]
-  [row label [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :name] (-> % .-target .-value))}]])
+(defn recipe-avatar-url [label]
+  [row label [:input.form-control {:field :text :on-change #(swap! new-recipe assoc-in [:avatar_url] (-> % .-target .-value))}]])
+
+(defn recipe-instructions-input [label]
+  [row label [:textarea.form-control {:rows 4 :on-change #(swap! new-recipe assoc-in [:instructions] (-> % .-target .-value))}]])
+
+;; Ingredients
+
+(defn ingredient-row [label name & quantity & unit]
+  [:div.row
+    [:div.col-xs-2 label]
+    [:div.col-xs-3 name]
+    [:div.col-xs-2 quantity]
+    [:div.col-xs-1 unit]])
+
+(defn ingredient-name-input [id]
+  [:input.form-control {:field :text :id id :on-change #(swap! ingredients assoc-in [id :name] (-> % .-target .-value))}])
+
+(defn ingredient-quantity-input [id]
+  [:input.form-control {:type :number :id id :on-change #(swap! ingredients assoc-in [id :quantity] (-> % .-target .-value))}])
+
+(defn ingredient-unit-input [id]
+  [:select.form-control {:field :list :id id :on-change #(swap! ingredients assoc-in [id :units] (-> % .-target .-value))}
+    [:option "Kg/s"]
+    [:option "Cup/s"]
+    [:option "Spoon/s"]])
+
+(defn ingredient-inputs [id label]
+ [ingredient-row label [ingredient-name-input id] [ingredient-quantity-input id] [ingredient-unit-input id]])
 
 ;; -------------------------
 ;; Ajax Methods
 
 (defn save-doc []
   (POST (str js/context "/recipes/new")
-    {:params {:name @recipe-name
-              :instructions @recipe-instructions
-              :avatar_url @recipe-avatar-url
+    {:params {:recipe @new-recipe
               :ingredients @ingredients}
     :handler (fn [_] (secretary/dispatch! "#/"))}))
 
@@ -100,30 +124,38 @@
 
 (defn add-ingredient [text]
   (let [id (swap! counter inc)]
-    (swap! ingredients assoc id {:id id :name "" :units "cups" :quantity 2})))
+    (swap! ingredients assoc id {:id id :name "" :units "Kg/s" :quantity 0})))
 
 (defn ingredient-item []
   (fn [{:keys [id]}]
-    [ingredient-name-input id "Item"]))
+    [ingredient-inputs id "Item"]))
 
-(defn add-ingredient-button []
+(defn new-recipe-add-ingredient-button []
   [:div
     [:button {:type "submit"
               :class "btn btn-default btn-small"
               :onClick #(add-ingredient "item")}
       "Add Ingredient"]])
 
-(defn ingredient-list []
+(defn new-recipe-ingredient-list []
   (let [items (vals @ingredients)]
     [:div
       (for [ingredient (filter identity items)]
         ^{:key (:id ingredient)} [ingredient-item ingredient])]))
 
-(defn new-recipe-form []
+(defn new-recipe-name []
   [:div
     [recipe-name-input "Recipe Name"]])
 
-(defn submit-recipe-button []
+(defn new-recipe-avatar-url []
+  [:div
+    [recipe-avatar-url "Avatar URL"]])
+
+(defn new-recipe-instructions []
+  [:div
+    [recipe-instructions-input "Instructions"]])
+
+(defn new-recipe-submit-button []
   [:button {:type "submit"
             :class "btn btn-default"
             :onClick save-doc}
@@ -133,13 +165,17 @@
   [:div
     [:section
       [:ul
-        [new-recipe-form]]
+        [new-recipe-name]]
       [:ul
-        [ingredient-list]]
+        [new-recipe-avatar-url]]
       [:ul
-        [add-ingredient-button]]
+        [new-recipe-ingredient-list]]
       [:ul
-        [submit-recipe-button]]]])
+        [new-recipe-add-ingredient-button]]
+      [:ul
+        [new-recipe-instructions]]
+      [:ul
+        [new-recipe-submit-button]]]])
 
 (defn new-recipe-page []
   [:div

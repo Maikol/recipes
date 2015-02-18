@@ -14,14 +14,19 @@
   (pk :id)
   (belongs-to recipes {:fk :recipe_id}))
 
+(def ingredient-types {:quantity #(Double/parseDouble %)})
+
 (defn insert-ingredients [recipe-id ingredients-map]
   (let [ingredients-seq (vals ingredients-map)]
     (doseq [ingredient ingredients-seq]
-      (let [ingredient-values (assoc (dissoc ingredient :id) :recipe_id recipe-id)]
+      ;; Should be better implemented
+      (let [ingredient-values (reduce-kv #(update-in %1 [%2] %3)
+                                          (assoc (dissoc ingredient :id) :recipe_id recipe-id)
+                                          ingredient-types)]
         (insert ingredients (values ingredient-values))))))
 
 (defn create-recipe [params]
-  (let [recipe-params (dissoc params :ingredients)
+  (let [recipe-params (get params :recipe)
         ingredients-map (get params :ingredients)]
     (transaction
       (let [recipe (insert recipes (values recipe-params))]
