@@ -4,6 +4,8 @@
 lein repl
 (use 'lobos.core 'lobos.connectivity 'lobos.config 'lobos.migration 'lobos.migrations)
 (binding [*src-directory* "src/clj/"] (migrate))
+(binding [*src-directory* "src/clj/"] (rollback))
+(binding [*src-directory* "src/clj/"] (reset :all)) ;; Resets all migrations (cleans the db)
 ```
 
 # Korma
