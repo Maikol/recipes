@@ -14,6 +14,10 @@
   (pk :id)
   (belongs-to recipes {:fk :recipe_id}))
 
+;;
+;; Ingredients
+;;
+
 (def ingredient-types {:quantity #(Double/parseDouble %)})
 
 (defn insert-ingredients [recipe-id ingredients-map]
@@ -23,7 +27,12 @@
       (let [ingredient-values (reduce-kv #(update-in %1 [%2] %3)
                                           (assoc (dissoc ingredient :id) :recipe_id recipe-id)
                                           ingredient-types)]
-        (insert ingredients (values ingredient-values))))))
+        (insert ingredients (values ingredient-values)))))
+    {:status "ok"})
+
+;;
+;; Recipes
+;;
 
 (defn create-recipe [params]
   (let [recipe-params (get params :recipe)
@@ -33,4 +42,10 @@
         (insert-ingredients (get recipe :id) ingredients-map)))))
 
 (defn get-all-recipes []
-  (select recipes (with ingredients)))
+  (select recipes))
+
+(defn destroy-recipe [recipe-id]
+  (let [recipe-id-int (Integer. recipe-id)]
+    (delete ingredients (where {:recipe_id recipe-id-int}))
+    (delete recipes (where {:id recipe-id-int}))
+    {:status "ok"}))

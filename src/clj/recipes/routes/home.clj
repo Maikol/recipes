@@ -16,13 +16,8 @@
       (layout/render
         "index.html" {:docs (util/md->html "/md/docs.md")}))
 
-(defn save-document [doc]
-      (pprint doc)
-      (models/create-recipe doc)
-      {:status "ok"})
-
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (POST "/recipes/new" {:keys [body-params]}
-    (edn (save-document body-params)))
-  (GET "/recipes" [] (models/get-all-recipes)))
+  (POST "/recipes/new" {:keys [body-params]} (models/create-recipe body-params))
+  (GET "/recipes" [] (models/get-all-recipes))
+  (DELETE "/recipes/:id" [id] (models/destroy-recipe id)))
