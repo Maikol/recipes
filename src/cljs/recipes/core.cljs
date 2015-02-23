@@ -4,7 +4,7 @@
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [ajax.core :refer [POST GET]]
+              [ajax.core :refer [POST GET DELETE]]
               [reagent-forms.core :refer [bind-fields]])
     (:import goog.History))
 
@@ -92,6 +92,10 @@
     :response-format :json
     :keywords? true))
 
+(defn destroy-recipe [recipe-id]
+  (DELETE (str js/context "/recipes/" recipe-id)
+    :handler (fn [_] (get-recipes))))
+
 ;; -------------------------
 ;; Home
 
@@ -107,14 +111,15 @@
 
 (defn recipe-item [recipe]
   (let [recipe-name (get recipe :name)
-        recipe-avatar-url (get recipe :avatar_url)]
+        recipe-avatar-url (get recipe :avatar_url)
+        recipe-id (get recipe :id)]
     [:tr
       [:td [:img {:src recipe-avatar-url :class "img-thumbnail" :style {:max-width "150px"}}]]
       [:td recipe-name]
       [:td
         [:button "Show"]
         [:button "Edit"]
-        [:button "Destroy"]]]))
+        [:button {:onClick #(destroy-recipe recipe-id)} "Destroy"]]]))
 
 (defn home-page []
   (get-recipes)
