@@ -13,7 +13,7 @@
 			(integer 		:id :primary-key :auto-inc )
 			(varchar 		:name 100 )
 			(varchar 		:instructions 1000)
-			(varchar 		:avatar_url 100)
+			(varchar 		:avatar_url 250)
 			(timestamp 	:created (default (now))))))
 	(down [] (drop (table :recipes ))))
 
