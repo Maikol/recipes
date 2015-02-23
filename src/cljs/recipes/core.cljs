@@ -95,17 +95,33 @@
 ;; -------------------------
 ;; Home
 
+(defn recipes-table-header []
+  [:tr
+    [:td [:b "Avatar"]]
+    [:td [:b "Recipe Name"]]
+    [:td [:b "Actions"]]])
+
+(defn recipe-actions []
+  [:div
+    ])
+
 (defn recipe-item [recipe]
   (let [recipe-name (get recipe :name)
-        ingredients-items (get recipe :ingredients)]
-    [:li recipe-name]))
+        recipe-avatar-url (get recipe :avatar_url)]
+    [:tr
+      [:td [:img {:src recipe-avatar-url :class "img-thumbnail" :style {:max-width "150px"}}]]
+      [:td recipe-name]
+      [:td
+        [:button "Show"]
+        [:button "Edit"]
+        [:button "Destroy"]]]))
 
 (defn home-page []
   (get-recipes)
   [:div
-    [:div.row [:h2 "Recipes Index"]]
-    [:div.row [:button { :class "btn-warning btn-sm" :onClick #(get-recipes)} "Load Recipes"]]
-    [:div
+    [:div.row [:h2 "Recipes"]]
+    [:table.table.table-hover
+      [recipes-table-header]
       (for [recipe (filter identity @recipes)]
         (do
           [recipe-item recipe]))]
