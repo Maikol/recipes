@@ -18,6 +18,6 @@
 
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (POST "/recipes/new" {:keys [body-params]} (models/create-recipe body-params))
+  (POST "/recipes/new" {:keys [body-params]} (edn (models/create-recipe body-params)))
   (GET "/recipes" [] (models/get-all-recipes))
-  (DELETE "/recipes/:id" [id] (models/destroy-recipe id)))
+  (DELETE "/recipes/:id" [id] (edn (models/destroy-recipe id))))

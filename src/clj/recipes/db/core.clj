@@ -45,7 +45,7 @@
   (select recipes))
 
 (defn destroy-recipe [recipe-id]
-  (let [recipe-id-int (Integer. recipe-id)]
+  (let [recipe-id-int (Integer/parseInt recipe-id)]
     (delete ingredients (where {:recipe_id recipe-id-int}))
     (delete recipes (where {:id recipe-id-int}))
     {:status "ok"}))
