@@ -44,6 +44,10 @@
 (defn get-all-recipes []
   (select recipes))
 
+(defn get-recipe [recipe-id]
+  (let [recipe-id-int (Integer/parseInt recipe-id)]
+    (select recipes (with ingredients (where {:id recipe-id-int})))))
+
 (defn destroy-recipe [recipe-id]
   (let [recipe-id-int (Integer/parseInt recipe-id)]
     (delete ingredients (where {:recipe_id recipe-id-int}))

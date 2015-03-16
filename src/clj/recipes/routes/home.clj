@@ -20,4 +20,5 @@
   (GET "/" [] (home-page))
   (POST "/recipes/new" {:keys [body-params]} (edn (models/create-recipe body-params)))
   (GET "/recipes" [] (models/get-all-recipes))
+  (GET "/recipes/:id" [id] (edn (models/get-recipe id)))
   (DELETE "/recipes/:id" [id] (edn (models/destroy-recipe id))))
