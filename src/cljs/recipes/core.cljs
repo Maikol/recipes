@@ -14,16 +14,6 @@
 (def state (atom {:saved? false}))
 
 ;; -------------------------
-;; SET / GET
-
-(defn set-value! [id value]
-  (swap! state assoc :saved? false)
-  (swap! state assoc-in [:doc id] value))
-
-(defn get-value [id]
-  (get-in @state [:doc id]))
-
-;; -------------------------
 ;; Declarations
 
 (def new-recipe (atom {:name "" :avatar_url "" :instructions ""}))
@@ -33,6 +23,8 @@
 (def counter (atom 0))
 
 (def recipes (atom []))
+
+(def recipe (atom (hash-map)))
 
 ;; -------------------------
 ;; Forms Helpers
@@ -92,6 +84,12 @@
     :response-format :json
     :keywords? true))
 
+(defn get-recipe [recipe-id]
+  (GET (str js/context "/recipes/" recipe-id)
+    :handler (fn [response] (js/console.log response))
+    :response-format :json
+    :keywords? true))
+
 (defn destroy-recipe [recipe-id]
   (DELETE (str js/context "/recipes/" recipe-id)
     :handler (fn [_] (get-recipes))))
@@ -117,8 +115,7 @@
       [:td [:img {:src recipe-avatar-url :class "img-thumbnail" :style {:max-width "150px"}}]]
       [:td recipe-name]
       [:td
-        [:button "Show"]
-        [:button "Edit"]
+        [:button {:onClick #(secretary/dispatch! (str "#/recipes/" recipe-id))} "View"]
         [:button {:onClick #(destroy-recipe recipe-id)} "Destroy"]]]))
 
 (defn home-page []
@@ -131,7 +128,7 @@
         (do
           [recipe-item recipe]))]
     [:br]
-    [:div.row [:button { :class "btn-primary btn-lg" :onClick #(secretary/dispatch! "#/new_recipe")} "New Recipe"]]])
+    [:div.row [:button { :class "btn-primary btn-lg" :onClick #(secretary/dispatch! "#/recipes/new")} "New Recipe"]]])
 
 ;; -------------------------
 ;; About
@@ -205,6 +202,17 @@
         [:h1 "New Recipe"]]
       [new-recipe-body]]])
 
+
+;; -------------------------
+;; Recipe View
+
+(defn recipe-view-page []
+  (get-recipe (get @recipe :id))
+  [:div
+    [:section
+      [:header
+        [:h1 "Recipe"]]]])
+
 ;; -------------------------
 ;; Nav Bar
 
@@ -241,9 +249,14 @@
   (session/put! :current-page #'about-page)
   (swap! state assoc :page about-page))
 
-(secretary/defroute "/new_recipe" []
+(secretary/defroute "/recipe/new" []
   (session/put! :current-page #'new-recipe-page)
   (swap! state assoc :page new-recipe-page))
+
+(secretary/defroute "/recipes/:id" [id query-params]
+  (session/put! :current-page #'recipe-view-page)
+  (swap! state assoc :page recipe-view-page)
+  (swap! recipe assoc :id id))
 
 ;; -------------------------
 ;; History
